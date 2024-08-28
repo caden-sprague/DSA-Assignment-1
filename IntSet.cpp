@@ -48,31 +48,47 @@ using namespace std;
 
 IntSet::IntSet()
 {
-   cout << "IntSet() is not implemented yet..." << endl;
+   for (int i = 0; i < MAX_SIZE; i++){
+      data[i] = 0;
+   }
+
+   used = 0;
 }
 
 int IntSet::size() const
 {
-   cout << "size() is not implemented yet..." << endl;
-   return 0; // dummy value returned
+   return used;
 }
 
 bool IntSet::isEmpty() const
 {
-   cout << "isEmpty() is not implemented yet..." << endl;
-   return false; // dummy value returned
+   return used == 0;
 }
 
 bool IntSet::contains(int anInt) const
 {
-   cout << "contains() is not implemented yet..." << endl;
-   return 0; // dummy value returned
+   for (int i = 0; i < used; i++){
+      if ( data[i] == anInt){
+         return true;
+      }
+   }
+   return false;
 }
 
 bool IntSet::isSubsetOf(const IntSet& otherIntSet) const
 {
-   cout << "isSubsetOf() is not implemented yet..." << endl;
-   return false; // dummy value returned
+   if(isEmpty()){
+      return true;
+   }
+   else 
+   {
+      for(int i = 0; i < used; i++){
+         if ( !otherIntSet.contains(data[i]) )
+         {
+            false;
+         }
+      }
+   }
 }
 
 void IntSet::DumpData(ostream& out) const
@@ -110,8 +126,15 @@ void IntSet::reset()
 
 bool IntSet::add(int anInt)
 {
-   cout << "add() is not implemented yet..." << endl;
-   return false; // dummy value returned
+   if ( contains(anInt) ) {
+       return false;
+   }
+   else 
+   {
+      data[used] = anInt; // need to account for wrapping
+      used++;
+      return true;
+   }
 }
 
 bool IntSet::remove(int anInt)
@@ -122,6 +145,13 @@ bool IntSet::remove(int anInt)
 
 bool equal(const IntSet& is1, const IntSet& is2)
 {
-   cout << "equal() is not implemented yet..." << endl;
-   return false; // dummy value returned
+   for(int i = 0; i < is1.size(); i++){
+      if ( is2.contains(is1[i]) )
+         continue;
+      else 
+         false;
+   }
+
+   // cout << "equal() is not implemented yet..." << endl;
+   // return false; // dummy value returned
 }
