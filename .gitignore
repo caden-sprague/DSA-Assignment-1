@@ -1,6 +1,4 @@
-
-Assignment1/
-*.out
 *.in
-a1
 *.o
+*.out
+a1
