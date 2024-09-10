@@ -46,13 +46,9 @@
 #include <cassert>
 using namespace std;
 
-IntSet::IntSet()
+IntSet::IntSet() : used(0)
 {
-   for (int i = 0; i < MAX_SIZE; i++){
-      data[i] = 0;
-   }
 
-   used = 0;
 }
 
 int IntSet::size() const
@@ -67,8 +63,10 @@ bool IntSet::isEmpty() const
 
 bool IntSet::contains(int anInt) const
 {
-   for (int i = 0; i < used; i++){
-      if ( data[i] == anInt){
+   for (int i = 0; i < used; i++)
+   {
+      if ( data[i] == anInt)
+      {
          return true;
       }
    }
@@ -77,22 +75,25 @@ bool IntSet::contains(int anInt) const
 
 bool IntSet::isSubsetOf(const IntSet& otherIntSet) const
 {
-   if(isEmpty()){
+   if(isEmpty())
+   {
       return true;
    }
    else 
    {
-      for(int i = 0; i < used; i++){
-         if ( !otherIntSet.contains(data[i]) )
+      for(int i = 0; i < used; i++)
+      {
+         if (!otherIntSet.contains(data[i]))
          {
-            false;
+            return false;
          }
       }
+      return true;
    }
 }
 
 void IntSet::DumpData(ostream& out) const
-{  // already implemented ... DON'T change anything
+{
    if (used > 0)
    {
       out << data[0];
@@ -103,35 +104,63 @@ void IntSet::DumpData(ostream& out) const
 
 IntSet IntSet::unionWith(const IntSet& otherIntSet) const
 {
-   cout << "unionWith() is not implemented yet..." << endl;
-   return IntSet(); // dummy IntSet object returned
+   if (used + (otherIntSet.subtract(*this)).size() > MAX_SIZE) 
+   {
+      return IntSet(); 
+   }
+   else 
+   {
+      IntSet returnSet = *this;
+      for(int i = 0; i < otherIntSet.size(); i++)
+      {
+         returnSet.add(otherIntSet.data[i]);
+      }
+      return returnSet;
+   }
 }
 
 IntSet IntSet::intersect(const IntSet& otherIntSet) const
 {
-   cout << "intersect() is not implemented yet..." << endl;
-   return IntSet(); // dummy IntSet object returned
+   IntSet returnSet;
+
+   for (int i = 0; i < used; i++)
+   {
+      if ( otherIntSet.contains(data[i]))
+      {
+         returnSet.add(data[i]);
+      }
+   }
+   return returnSet;
 }
 
 IntSet IntSet::subtract(const IntSet& otherIntSet) const
 {
-   cout << "subtract() is not implemented yet..." << endl;
-   return IntSet(); // dummy IntSet object returned
+   IntSet returnSet = *this;
+
+   for(int i = 0; i < used; i++)
+   {
+      if (otherIntSet.contains(data[i]))
+      {
+         returnSet.remove(data[i]);
+      }
+   }
+   return returnSet;
 }
 
 void IntSet::reset()
 {
-   cout << "reset() is not implemented yet..." << endl;
+   used = 0;
 }
 
 bool IntSet::add(int anInt)
 {
-   if ( contains(anInt) ) {
-       return false;
+   if (contains(anInt)) 
+   {
+      return false;
    }
    else 
    {
-      data[used] = anInt; // need to account for wrapping
+      data[used] = anInt;
       used++;
       return true;
    }
@@ -139,19 +168,22 @@ bool IntSet::add(int anInt)
 
 bool IntSet::remove(int anInt)
 {
-   cout << "remove() is not implemented yet..." << endl;
-   return false; // dummy value returned
+   for(int i = 0; i < used; i++)
+   {
+      if(data[i] == anInt)
+      {
+         for (int j = i; j < used-1; j++)
+         {
+            data[j] = data[j+1];
+         }
+         used--;
+         return true;
+      }
+   }
+   return false;
 }
 
 bool equal(const IntSet& is1, const IntSet& is2)
 {
-   for(int i = 0; i < is1.size(); i++){
-      if ( is2.contains(is1[i]) )
-         continue;
-      else 
-         false;
-   }
-
-   // cout << "equal() is not implemented yet..." << endl;
-   // return false; // dummy value returned
+  return is1.isSubsetOf(is2) && is2.isSubsetOf(is1);
 }
